@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react'
-import { AlignRight, ChevronRight, GitMerge, Navigation2, Truck } from 'react-feather';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react'
+import { AlignRight, ChevronRight, GitMerge, LogOut, Navigation2, Truck, User } from 'react-feather';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../Index';
 
 export const Sidebar = () => {
 
+  const navigate = useNavigate()
+  const { setDataUser, setLoggedIn } = useContext(AuthContext)
   const [open, setOpen] = useState(false)
 
   const links = [
@@ -22,6 +25,14 @@ export const Sidebar = () => {
       icon: <Navigation2 />
     }
   ]
+
+  const logout = (e) => {
+    e.preventDefault()
+    localStorage.clear();
+    setLoggedIn(false)
+    setDataUser({})
+    navigate('/')
+  }
 
   return (
     <>
@@ -55,9 +66,21 @@ export const Sidebar = () => {
                 })
               }
             </div>
-            <Link>
-              Profile
-            </Link>
+            <div className='flex flex-col gap-3'>
+              <Link
+                className={`flex items-center max-sm:justify-center gap-3 px-4 py-4 hover:bg-slate-50/40 rounded-xl ${open ? `animate-fade-left animate-duration-[1400ms] animate-delay-[200ms] animate-ease-in-out` : ''}`}
+              >
+                <User/>
+                Profile
+              </Link>
+              <button
+                onClick={(e)=>{logout(e)}}
+                className={`flex items-center max-sm:justify-center gap-3 px-4 py-4 hover:bg-slate-50/40 rounded-xl ${open ? `animate-fade-left animate-duration-[1600ms] animate-delay-[200ms] animate-ease-in-out` : ''}`}
+              >
+                <LogOut/>
+                Log Out
+              </button>
+            </div>
           </div>
         </div>
       </div>

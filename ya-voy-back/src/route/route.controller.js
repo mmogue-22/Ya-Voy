@@ -103,6 +103,8 @@ exports.upda = async(req, res) => {
             msg += `Param exits is required\n`;
         if (!data.duration || data.duration == null || data.duration == undefined)
             msg += `Param duration is required\n`;
+        if (!data.price || data.price == null || data.price == undefined)
+            msg += `Param duration is required\n`;
         msg.trim();
         if (msg)
             return res.status(418).send(msg);

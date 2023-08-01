@@ -21,6 +21,7 @@ const userRoutes = require('../src/user/user.routes');
 const busRoutes = require('../src/bus/bus.routes');
 const accountRoutes = require('../src/account/account.routes');
 const routeRoutes = require('../src/route/route.routes');
+const requestRoutes = require('../src/request/request.routes');
 
 /* ----- CONFIG SERVER ----- */
 app.use(express.urlencoded({ extended: false }));
@@ -37,6 +38,7 @@ app.use('/user', userRoutes);
 app.use('/bus', busRoutes);
 app.use('/account', accountRoutes);
 app.use('/route', routeRoutes);
+app.use('/request', requestRoutes);
 
 /* ----- DEPLOYED SERVER ----- */
 exports.initServer = () => {

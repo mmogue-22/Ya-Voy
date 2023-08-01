@@ -55,6 +55,10 @@ const routeSchema = mongoose.Schema({
         type: String,
         default: '01:30:00'
     },
+    price: {
+        type: String,
+        required: true
+    },
     comments: {
         type: [{
             user: {

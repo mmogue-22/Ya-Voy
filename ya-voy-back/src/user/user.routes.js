@@ -20,6 +20,8 @@ api.get('/get-companies', [ensureAdvance, isAdmin], userController.getCo);
 api.get('/get-img/:img', [ensureAdvance, upload], userController.getImg);
 api.put('/update-pass/:userId', [ensureAdvance], userController.updaPass);
 api.put('/upload-img/:userId', [ensureAdvance, upload], userController.uploadImg);
+api.put('/updated/:userId', [ensureAdvance], userController.upda);
+api.delete('/delete/:userId', [ensureAdvance], userController.del);
 
 /* ----- PUBLIC ----- */
 api.post('/login', userController.login);

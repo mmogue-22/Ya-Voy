@@ -233,7 +233,56 @@ exports.getImg = async(req, res) => {
 // Data (@admin and @user)
 exports.upda = async(req, res) => {
     try {
-
+        const { userId } = req.params;
+        const { sub, role } = req.user;
+        let data = {
+            name: req.body.name,
+            surname: req.body.surname,
+            email: req.body.email,
+        }
+        const msg = verify(data);
+        if (msg)
+            return res.status(418).send(msg);
+        data.username = await generateUsername(data.name, data.surname);
+        const user = await User.findOne({ _id: userId });
+        if (!user)
+            return res.status(404).send({ message: `User not found or not exist` });
+        if ((await User.findOne({ username: 'admin' }))._id == user._id)
+            return res.status(404).send({ message: `You can't updated this type of user` });
+        switch (role) {
+            case 'kinalero':
+                if (user.role == 'kinalero')
+                    if (sub != String(user._id))
+                        return res.status(400).send({ message: `You can't update this type of user` });
+                await User.updateOne({ _id: user._id }, data, { new: true });
+                return res.send({ message: `Profile has been updated` });
+                break;
+            case 'admin':
+                if (user.role == 'kinalero')
+                    return res.status(400).send({ message: `You can't update this type of user` });
+                if (user.role == 'admin')
+                    if (sub != String(user._id))
+                        return res.status(400).send({ message: `You can't update this type of user` });
+                data.birthday = req.body.birthday;
+                data.phone = req.body.phone;
+                const msg2 = verify(data);
+                if (msg2)
+                    return res.status(418).send(msg2);
+                await User.updateOne({ _id: user._id }, data, { new: true });
+                return res.send({ message: `Profile has been updated` });
+                break;
+            default:
+                if (sub != String(user._id))
+                    return res.status(400).send({ message: `You can only update your account` });
+                data.birthday = req.body.birthday;
+                data.phone = req.body.phone;
+                const msg3 = verify(data);
+                if (msg3)
+                    return res.status(418).send(msg3);
+                await User.updateOne({ _id: user._id }, data, { new: true });
+                return res.send({ message: `Profile has been updated` });
+                break;
+        }
     } catch (err) {
         console.error(err);
         return res.status(500).send({ message: `Error updating user` });
@@ -270,6 +319,53 @@ exports.updaPass = async(req, res) => {
 }
 
 /* --- DELETE --- */
+exports.del = async(req, res) => {
+    try {
+        const { userId } = req.params;
+        const { sub, role } = req.user;
+        const user = await User.findOne({ _id: userId });
+        if (!user)
+            return res.status(404).send({ message: `User not found or not exist` });
+        if ((await User.findOne({ username: 'admin' }))._id == user._id)
+            return res.status(404).send({ message: `You can't delete this type of user` });
+        switch (role) {
+            case 'kinalero':
+                if (user.role == 'kinalero')
+                    if (sub != String(user._id))
+                        return res.status(400).send({ message: `You can't delete this type of user` });
+                await User.deleteOne({ _id: userId }, { new: true });
+                return res.send({ message: `User deleted successfully` });
+                break;
+            case 'admin':
+                if (user.role == 'kinalero')
+                    return res.status(400).send({ message: `You can't delete this type of user` });
+                if (user.role == 'admin')
+                    if (sub != String(user._id))
+                        return res.status(400).send({ message: `You can't delete this type of user` });
+                await User.deleteOne({ _id: userId }, { new: true });
+                return res.send({ message: `User deleted successfully` });
+                break;
+            case 'company':
+                if (sub != String(user._id))
+                    return res.status(400).send({ message: `You can only delete your account` });
+                if (
+                    await Bus.findOne({ owner: user._id }) || await Route.findOne({ attendant: user._id })
+                ) return res.status(400).send({ message: `You cannot delete this account since you have a bus or linked route` });
+                await User.deleteOne({ _id: userId }, { new: true });
+                return res.send({ message: `User deleted successfully` });
+                break;
+            default:
+                if (sub != String(user._id))
+                    return res.status(400).send({ message: `You can only delete your account` });
+                await User.deleteOne({ _id: userId }, { new: true });
+                return res.send({ message: `User deleted successfully` });
+                break;
+        }
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send({ message: `Error deleting user` });
+    }
+}
 
 /* --- UPLOAD IMG --- */
 exports.uploadImg = async(req, res) => {
