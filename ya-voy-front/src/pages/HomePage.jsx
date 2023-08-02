@@ -7,7 +7,7 @@ export const HomePage = () => {
 
   const getCoords = async () => {
     try {
-      navigator.geolocation.getCurrentPosition(async(position) => {
+      navigator.geolocation.getCurrentPosition(async (position) => {
         const { longitude, latitude } = position.coords;
         setCoords({ longitude, latitude });
         const { data } = await axios(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
@@ -24,8 +24,10 @@ export const HomePage = () => {
 
   return (
     <div>
-      {coords.longitude} // 
-      {coords.latitude}
+      <div
+      className='w-full min-h-[calc(100vh-56px)]'
+      >
+      </div>
     </div>
   )
 }

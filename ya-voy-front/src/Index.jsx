@@ -4,7 +4,12 @@ import App from './App';
 import { BusesPage } from './pages/BusesPage';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
+import { MapPage } from './pages/MapPage';
 import { RegisterPage } from './pages/RegisterPage';
+import { RoutesPage } from './pages/RoutesPage';
+import { ProfilePage } from './pages/ProfilePage'
+import { InfoRoutePage } from './pages/InfoRoutePage';
+import { AlarmsPage } from './pages/AlarmsPage';
 
 export const AuthContext = createContext()
 
@@ -34,6 +39,26 @@ export const Index = () => {
         {
           path: 'bus',
           element: <BusesPage />
+        },
+        {
+          path: 'route',
+          element: <RoutesPage />
+        },
+        {
+          path: 'route/:id',
+          element: <InfoRoutePage />
+        },
+        {
+          path: 'map-online',
+          element: <MapPage />
+        },
+        {
+          path: 'profile',
+          element: <ProfilePage />
+        },
+        {
+          path: 'alarms',
+          element: <AlarmsPage />
         }
       ]
     },

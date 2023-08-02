@@ -92,7 +92,29 @@ exports.register = async(req, res) => {
         data.username = await generateUsername(data.name, data.surname);
         const user = new User(data);
         await user.save();
-        return res.send({ message: `Register completed`, UI: user._id });
+        const token = await createTK(user);
+        switch (user.role) {
+            case 'kinalero':
+                user.role = '2dT0ldi'
+                break;
+            case 'admin':
+                user.role = 'Pq38sRl'
+                break;
+            case 'company':
+                user.role = 'v2T3srZ'
+                break;
+            default:
+                user.role = 'qgEE30w'
+                break;
+        }
+        const logged = {
+            name: user.name,
+            surname: `${user.surname ? user.surname : ''}`,
+            username: user.username,
+            t4Ca59q: `${user.photo ? user.photo : ''}`,
+            Qdt3caW4: user.role
+        }
+        return res.send({ message: `Register completed`, UI: user._id, IN6AV: token, logged });
     } catch (err) {
         console.error(err);
         return res.status(500).send({ message: `Error register`, err });
@@ -383,7 +405,7 @@ exports.uploadImg = async(req, res) => {
                     fs.unlinkSync(`${directory}${user.photo}`);
             const name = upload(photo.path, 'I');
             await User.updateOne({ _id: user._id }, { photo: name }, { new: true });
-            return res.send({ message: `Photo added successfully` });
+            return res.send({ message: `Photo added successfully`, name: name });
         }
         fs.unlinkSync(`${photo.path}`);
         return res.status(404).send({ message: `User not found or not exist` });
